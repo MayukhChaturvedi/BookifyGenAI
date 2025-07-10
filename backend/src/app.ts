@@ -35,7 +35,13 @@ const logger = winston.createLogger({
 });
 
 const app = express();
-app.use(cors({}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN
+      ? process.env.CORS_ORIGIN
+      : 'http://localhost:5173', // Default to allowing only http://localhost:5173
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', authenticate);
