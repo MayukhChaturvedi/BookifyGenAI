@@ -1,22 +1,10 @@
 import postgres from 'postgres';
+import config from '../config/config.js';
+import sslConfig from './sslConfig.js'; // <-- Import the shared config
 
-// const sql = postgres({
-//   host: process.env.DB_HOST || 'localhost',
-//   port: Number(process.env.DB_PORT) || 5432,
-//   database: process.env.DB_NAME || 'bookify',
-//   username: process.env.DB_USER || 'postgres',
-//   password: process.env.DB_PASSWORD || 'password',
-//   ssl: {
-//     rejectUnauthorized: false,
-//   },
-// });
-
-const sql = postgres(
-  process.env.DB_URL || 'postgres://postgres:password@localhost:5432/bookify',
-  {
-    max: 10, // Maximum number of connections in the pool
-    idle_timeout: 30000, // Close idle connections after 30 seconds);
-  },
-);
+// The 'postgres' library uses a slightly different connection method but accepts the same ssl object
+const sql = postgres(config.dbUrl, {
+  ssl: sslConfig, // <-- Use the shared SSL config here too
+});
 
 export default sql;

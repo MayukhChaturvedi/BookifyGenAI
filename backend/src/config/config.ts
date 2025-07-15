@@ -1,10 +1,10 @@
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { configDotenv } from 'dotenv';
+configDotenv({ debug: true });
 
 interface Config {
   port: number;
   nodeEnv: string;
+  dbHost: string;
   dbUrl: string;
   jwtSecret: string;
   jwtExpiration: number;
@@ -15,6 +15,7 @@ interface Config {
 const config: Config = {
   port: Number(process.env.PORT) || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
+  dbHost: process.env.DB_HOST || 'localhost',
   dbUrl: process.env.DB_URL || 'example_db_url',
   jwtSecret: process.env.JWT_SECRET || 'example_jwt_secret',
   jwtExpiration: Number(process.env.JWT_EXPIRATION) || 60 * 60, // 1 hour

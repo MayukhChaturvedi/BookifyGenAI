@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import api from "../services/api.js"; // Your axios instance
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const Chatbot = () => {
 	const [isOpen, setIsOpen] = useState(false);
-	const [messages, setMessages] = useState([]);
+	const [messages, setMessages] = useState([
+		{ text: "Hello! How can I assist you today?", sender: "bot" },
+	]);
 	const [input, setInput] = useState("");
 	const [loading, setLoading] = useState(false); // New loading state
 	const chatWindowRef = useRef(null);
@@ -37,12 +41,12 @@ const Chatbot = () => {
 
 		try {
 			// API call to /rag/
-			const response = await api.post("/rag/", {
+			const response = await api.post("/api/chat", {
 				query: input,
 			});
 
 			const botMessage = {
-				text: response.data.response || "Sorry, I couldn't find an answer.",
+				text: response.data.answer || "Sorry, I couldn't find an answer.",
 				sender: "bot",
 			};
 			setMessages((prev) => [...prev, botMessage]);
@@ -129,7 +133,9 @@ const Chatbot = () => {
 											: "bg-gray-700 text-gray-200"
 									}`}
 								>
-									{msg.text}
+									<ReactMarkdown remarkPlugins={[remarkGfm]}>
+										{msg.text}
+									</ReactMarkdown>
 								</span>
 							</div>
 						))}
@@ -153,7 +159,7 @@ const Chatbot = () => {
 							type="text"
 							value={input}
 							onChange={(e) => setInput(e.target.value)}
-							onKeyPress={(e) => e.key === "Enter" && handleSend()}
+							onKeyUp={(e) => e.key === "Enter" && handleSend()}
 							className="flex-1 p-2 rounded bg-gray-800 text-white border-none focus:outline-none focus:ring-2 focus:ring-orange-500"
 							placeholder="Ask about books..."
 							disabled={loading} // Disable input while loading

@@ -18,6 +18,7 @@ declare global {
         id: string;
         email: string;
         role: string;
+        session: string;
       };
     }
   }
@@ -55,8 +56,15 @@ export const login = asyncHandler(
       return;
     }
 
+    const sessionId = v4(); // Generate a new session ID
+
     const token = jwt.sign(
-      { id: user[0].id, email: user[0].email, role: user[0].role },
+      {
+        id: user[0].id,
+        email: user[0].email,
+        role: user[0].role,
+        session: sessionId,
+      },
       config.jwtSecret,
       {
         expiresIn: config.jwtExpiration,
@@ -121,7 +129,12 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
     };
 
     const newAccessToken = jwt.sign(
-      { id: decoded.id, email: decoded.email, role: decoded.role },
+      {
+        id: decoded.id,
+        email: decoded.email,
+        role: decoded.role,
+        session: v4(),
+      },
       config.jwtSecret,
       {
         expiresIn: config.jwtExpiration,
@@ -155,6 +168,7 @@ export const authenticate = asyncHandler(
         id: string;
         email: string;
         role: string;
+        session: string;
       };
       const { exp } = jwt.decode(token) as { exp: number };
 
@@ -163,7 +177,12 @@ export const authenticate = asyncHandler(
         return;
       }
 
-      req.user = { id: decoded.id, email: decoded.email, role: decoded.role };
+      req.user = {
+        id: decoded.id,
+        email: decoded.email,
+        role: decoded.role,
+        session: decoded.session,
+      };
       next();
     } catch {
       res.status(401).json({ message: 'Invalid or expired token' });

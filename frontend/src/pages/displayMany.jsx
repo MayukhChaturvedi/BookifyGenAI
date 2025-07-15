@@ -50,7 +50,7 @@ export default function DisplayMany() {
 				console.log(`Fetching ${type} with filter: ${filterString}`);
 
 				const response = await api.get(
-					`/api/${type}?skip=${page - 1}&${filterString}limit=10`
+					`/api/${type}?page=${page}&${filterString}limit=10`
 				);
 
 				console.log("API Response:", response.data);

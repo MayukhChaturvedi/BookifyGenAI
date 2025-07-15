@@ -6,6 +6,7 @@ import {
   bookCreateSchema,
   bookQuerySchema,
 } from '../validators/bookValidator.js';
+import * as embeddingService from '../services/embeddingService.js';
 
 interface Book {
   id: string;
@@ -167,6 +168,8 @@ export const createBook = asyncHandler(async (req: Request, res: Response) => {
     VALUES (${newBookId}, ${title}, ${author}, ${summary}, ${genre});
   `;
 
+  embeddingService.syncBookEmbedding(newBookId);
+
   res.status(201).json({ id: newBookId, title, author, summary, genre });
 });
 
@@ -193,11 +196,15 @@ export const updateBook = asyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
+  embeddingService.syncBookEmbedding(bookId);
+
   res.status(200).json({ id: bookId, title, author, summary, genre });
 });
 
 export const deleteBook = asyncHandler(async (req: Request, res: Response) => {
   const bookId = req.params.id;
+
+  await embeddingService.deleteBookEmbedding(bookId);
 
   const result = await sql`
         DELETE FROM books

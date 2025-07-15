@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import sql from '../db/db.js';
 import { authorSchema } from '../validators/authorValidator.js';
+import * as embeddingService from '../services/embeddingService.js';
 
 interface Author {
   id: string;
@@ -133,6 +134,8 @@ export const updateAuthor = asyncHandler(
       res.status(404).json({ message: 'Author not found' });
       return;
     }
+
+    embeddingService.updateAuthorNameForBooks(authorId);
 
     res.status(200).json({ id: authorId, name, bio });
   },

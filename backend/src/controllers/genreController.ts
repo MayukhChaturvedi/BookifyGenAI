@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import sql from '../db/db.js';
 import { v4 as uuidv4 } from 'uuid';
 import { genreSchema } from '../validators/genreValidator.js';
+import * as embeddingService from '../services/embeddingService.js';
 
 interface Genre {
   id: string;
@@ -130,6 +131,8 @@ export const updateGenre = asyncHandler(async (req: Request, res: Response) => {
     res.status(404).json({ message: 'Genre not found' });
     return;
   }
+
+  embeddingService.updateGenreNameForBooks(genreId);
 
   res.status(200).json(updatedGenre);
 });
