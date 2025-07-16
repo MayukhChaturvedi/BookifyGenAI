@@ -9,9 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
-    "build": "npm install && tsc",
-    "postbuild": "echo '--- Build complete. Root directory contents: ---' && ls -A && echo '--- Contents of dist/ folder: ---' && ls -A dist/ || echo '--- dist/ folder NOT FOUND after build ---'",
-    "prestart": "echo '--- Pre-start. Root directory contents: ---' && ls -A && echo '--- Contents of dist/ folder: ---' && ls -A dist/ || echo '--- dist/ folder NOT FOUND before start ---'",
+    "build": "tsc",
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts,.js"
   },
