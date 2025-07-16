@@ -52,13 +52,20 @@ const shouldContinue = (state: GraphState) => {
  * The primary node for our agent. It invokes the model with the current conversation state.
  */
 const callModel = async (state: GraphState) => {
-  const { messages, summary } = state;
+  const { messages, summary, userId } = state;
   const systemInstructions = `You are a helpful and friendly library assistant. Your primary goal is to assist users conversationally.
 
   **Your Core Instructions:**
   1.  **Always be conversational.** Your main purpose is to talk to the user, not to be an automated script.
   2.  **Use tools to get information.** Your tools help you find facts about the library's collection.
   3.  **Report tool results to the user.** After a tool runs, explain the result to the user in a natural way.
+
+  **Specific Rule for Displaying Search Results:**
+  - When either the 'findBooksByFilter' or 'findBooksByTopic' tool returns a list of books, you MUST format the book titles as Markdown links.
+  - The JSON output from the tool will contain an 'id' for each book.
+  - The URL for the link must follow this exact format: \`/books/<book_id>\`.
+  - For example, if a book has the title "Dune" and the id "a1b2-c3d4", you must format it as: \`[Dune](/books/a1b2-c3d4)\`.
+  - Present the results as a list.
 
   **Specific Rule for Not Finding a Book:**
   This is a non-negotiable, multi-step process:
@@ -93,6 +100,9 @@ const callModel = async (state: GraphState) => {
 **System Instructions:**
 ${systemInstructions}
 
+**Session Information:**
+User ID: ${userId}
+
 **Conversation Summary (Long-Term Memory):**
 ${summary || 'No prior conversation history for this session.'}
 
@@ -100,7 +110,7 @@ ${summary || 'No prior conversation history for this session.'}
 ${formattedHistory}
 
 **Assistant's Turn:**
-Now, generate the next response based on all the information above.
+Now, generate the next response based on all the information above. When you call the 'requestBook' tool, you MUST use the User ID provided in the 'Session Information' section.
 `;
 
   const response = await model.invoke([new HumanMessage(finalPrompt)]);
@@ -117,6 +127,10 @@ const workflow = new StateGraph<GraphState>({
     },
     summary: {
       value: (x, y) => y ?? x, // Always take the new summary if provided
+      default: () => '',
+    },
+    userId: {
+      value: (x, y) => y ?? x, // Take the newest value if provided
       default: () => '',
     },
   },

@@ -1,5 +1,5 @@
 import { configDotenv } from 'dotenv';
-configDotenv({ debug: true });
+configDotenv();
 
 interface Config {
   port: number;

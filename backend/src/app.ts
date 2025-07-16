@@ -8,33 +8,12 @@ import genreRouter from './routes/genreRouter.js';
 import chatRouter from './routes/chatRouter.js';
 import { authenticate } from './controllers/userController.js';
 import cors from 'cors';
-import winston from 'winston';
-import DailyRotateFile from 'winston-daily-rotate-file';
 import path from 'path';
 import rateLimit from 'express-rate-limit';
+import { httpLogger } from './config/logger.js';
 
 const logDir = path.join(process.cwd(), 'logs');
-const instanceId = process.pid; // or use Date.now() for more uniqueness
-
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  transports: [
-    new DailyRotateFile({
-      filename: path.join(logDir, `error-%DATE%-${instanceId}.log`),
-      datePattern: 'YYYY-MM-DD',
-      level: 'error',
-      maxFiles: '14d',
-      zippedArchive: true,
-    }),
-    new DailyRotateFile({
-      filename: path.join(logDir, `combined-%DATE%-${instanceId}.log`),
-      datePattern: 'YYYY-MM-DD',
-      maxFiles: '14d',
-      zippedArchive: true,
-    }),
-  ],
-});
+const instanceId = process.pid;
 
 const app = express();
 app.use(
@@ -44,6 +23,8 @@ app.use(
       : 'http://localhost:5173', // Default to allowing only http://localhost:5173
   }),
 );
+
+app.use(httpLogger);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', authenticate);
@@ -62,13 +43,5 @@ app.use(
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   }),
 );
-
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(
-    new winston.transports.Console({
-      format: winston.format.simple(),
-    }),
-  );
-}
 
 export default app;

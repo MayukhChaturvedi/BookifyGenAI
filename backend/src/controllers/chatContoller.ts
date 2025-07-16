@@ -46,6 +46,7 @@ export const chatWithAgent = asyncHandler(
     const graphInput = {
       messages: messagesForGraph,
       summary: existingSummary,
+      userId: userId,
     };
 
     const config = {

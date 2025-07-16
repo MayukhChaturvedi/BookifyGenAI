@@ -57,7 +57,6 @@ export const getAuthors = asyncHandler(async (req: Request, res: Response) => {
         SELECT COUNT(*) AS count
         FROM authors;
     `;
-  console.log(authors);
   res.status(200).json({
     data: authors,
     totalCount: countResult.count,

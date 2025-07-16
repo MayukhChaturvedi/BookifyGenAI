@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import api from "../services/api.js"; // Your axios instance
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Link } from "react-router-dom";
 
 const Chatbot = () => {
 	const [isOpen, setIsOpen] = useState(false);
@@ -133,7 +134,21 @@ const Chatbot = () => {
 											: "bg-gray-700 text-gray-200"
 									}`}
 								>
-									<ReactMarkdown remarkPlugins={[remarkGfm]}>
+									<ReactMarkdown
+										remarkPlugins={[remarkGfm]}
+										components={{
+											a: ({ node, ...props }) => {
+												props.children = '"' + props.children + '"';
+												return (
+													<Link
+														className="text-orange-500 text-lg font-semibold"
+														to={props.href || ""}
+														{...props}
+													/>
+												);
+											},
+										}}
+									>
 										{msg.text}
 									</ReactMarkdown>
 								</span>

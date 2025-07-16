@@ -50,9 +50,7 @@ function App() {
 								path="/:type/:id"
 								element={
 									<PrivateRoute>
-										<AdminRoute>
-											<DisplayOne />
-										</AdminRoute>
+										<DisplayOne />
 									</PrivateRoute>
 								}
 							/>
