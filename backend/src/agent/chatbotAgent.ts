@@ -15,6 +15,7 @@ import checkStatusTool from './tools/checkStatusTool.js';
 import requestBookTool from './tools/requestBookTool.js';
 import findBooksByTopicTool from './tools/findBooksByTopicTool.js';
 import findBooksByFilterTool from './tools/findBooksByFilterTool.js';
+import generateStudyPlanTool from './tools/generateStudyPlanTool.js';
 
 // Define the tools for the agent
 const tools = [
@@ -22,6 +23,7 @@ const tools = [
   findBooksByTopicTool,
   checkStatusTool,
   requestBookTool,
+  generateStudyPlanTool,
 ];
 const toolNode = new ToolNode<{ messages: BaseMessage[] }>(tools);
 

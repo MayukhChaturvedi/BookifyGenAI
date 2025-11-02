@@ -6,6 +6,7 @@ import bookInstanceRouter from './routes/bookInstanceRouter.js';
 import authorRouter from './routes/authorRouter.js';
 import genreRouter from './routes/genreRouter.js';
 import chatRouter from './routes/chatRouter.js';
+import studyPlanRouter from './routes/studyPlanRouter.js';
 import { authenticate } from './controllers/userController.js';
 import cors from 'cors';
 import path from 'path';
@@ -33,6 +34,7 @@ app.use('/api/bookinstances', bookInstanceRouter);
 app.use('/api/authors', authorRouter);
 app.use('/api/genres', genreRouter);
 app.use('/api/chat', chatRouter);
+app.use('/api/study-plan', studyPlanRouter);
 app.use('/auth', userRouter);
 app.use(errorHandler);
 app.use(

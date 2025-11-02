@@ -7,6 +7,7 @@ import Create from "./pages/create.jsx";
 import Update from "./pages/update.jsx";
 import Delete from "./pages/delete.jsx";
 import Contact from "./pages/contact.jsx";
+import StudyPlanUploader from "./pages/studyPlanner";
 import Login from "./pages/login.jsx";
 import Register from "./pages/register.jsx";
 import Dashboard from "./pages/dashboard.jsx";
@@ -71,6 +72,14 @@ function App() {
 										<AdminRoute>
 											<Delete />
 										</AdminRoute>
+									</PrivateRoute>
+								}
+							/>
+							<Route
+								path="/study-plan"
+								element={
+									<PrivateRoute>
+										<StudyPlanUploader />
 									</PrivateRoute>
 								}
 							/>
